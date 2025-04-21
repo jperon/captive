@@ -1,0 +1,24 @@
+#!/bin/sh
+
+WWW_LUA="/www/lua"
+
+touch /etc/config/captive
+uci set captive.common='common'
+uci set captive.common.iface='br-lan'
+uci set captive.common.day_begin='07:00'
+uci set captive.common.day_end='22:00'
+uci set captive.common.path="${WWW_LUA}/captive"
+uci set captive.common.mode='lunatik'
+uci set captive.users='users'
+uci add_list captive.users.admins='admin'
+uci add_list captive.users.users='admin:$apr1$jPG.ILlm$UNhV0tMjzTzcOF4xMIayP0'
+uci set captive.common.css="${WWW_LUA}/captive/css/concrete.min.css"
+uci set captive.ipv6='ipv6'
+uci set captive.ipv6.addr='::'
+uci set captive.ipv6.port=80
+uci set captive.ipv4='ipv4'
+uci set captive.ipv4.addr='0.0.0.0'
+uci set captive.ipv4.port=80
+uci commit captive
+
+return 0

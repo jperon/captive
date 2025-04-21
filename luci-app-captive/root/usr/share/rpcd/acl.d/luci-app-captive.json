@@ -1,0 +1,11 @@
+{
+  "luci-app-captive": {
+    "description": "Grant access to LuCI app captive",
+    "read": {
+      "uci": [ "captive" ]
+    },
+    "write": {
+      "uci": [ "captive" ]
+    }
+  }
+}

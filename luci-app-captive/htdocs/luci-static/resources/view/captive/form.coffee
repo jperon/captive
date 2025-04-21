@@ -1,0 +1,45 @@
+'use strict'
+'require view'
+'require form'
+  
+  
+# Project code format is tabs, not spaces
+return view.extend
+  render: ->
+    m = new form.Map 'captive', _('Captive portal configuration')
+    
+    # IPv6 section
+    s = m.section form.TypedSection, 'users', _('Users')
+    s.anonymous = true
+    s.option form.DynamicList, 'admins', _('Admins'),  _('Admins can add new users to portal. They must figure in following list.')
+    s.option form.DynamicList, 'users',  _('Users'),   _('username:$hash$of$password like in htpasswd files.<br/>
+      May be generated with this command (replacing <code>user</code> by user name):<br/>
+      <code>echo "user:`openssl passwd -apr1`"</code><br/>
+      New users may be added <a href="/lua/auth/users">here</a> too.')
+
+    # IPv6 section
+    s = m.section form.TypedSection, 'ipv6', _('IPv6')
+    s.anonymous = true
+    s.option form.Value, 'addr', _('Listening address'),  _('IPv6 address on which the http redirection will be activated')
+    s.option form.Value, 'port', _('Port'),               _('Listening port. Should be 80, except if there is a reverse proxy.<br/>
+      Only suitable for nft mode.')
+    
+    # IPv4 section
+    s = m.section form.TypedSection, 'ipv4', _('IPv4')
+    s.anonymous = true
+    s.option form.Value, 'addr', _('Listening address'),  _('IPv4 address on which the http redirection will be activated')
+    s.option form.Value, 'port', _('Port'),               _('Listening port. 80 if in doubt.<br/>
+      Only suitable for nft mode.')
+    
+    # Common section
+    s = m.section form.TypedSection, 'common'
+    o = s.option form.ListValue, 'mode',      _('Mode'), _('nft or lunatik')
+    o.value 'lunatik', 'lunatik'
+    o.value 'nft',     'nft'
+    s.option form.Value, 'iface',     _('Internal interface'), _('The internal network interface')
+    s.option form.Value, 'day_begin', _('Opening hour'),       _('Beginning of day')
+    s.option form.Value, 'day_end',   _('Closing hour'),       _('End of day')
+    s.option form.Value, 'path',      _('Path'),               _('In which folder captive is found')
+    s.option form.Value, 'css',       _('CSS'),                _('Path of the css')
+
+    m.render()
