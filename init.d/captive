@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+
+CONFIGURATION=captive
+START=95
+STOP=01
+
+start_service() {
+  lunatik spawn captive/main
+}
+
+stop_service() {
+  lunatik unload
+}

@@ -14,7 +14,7 @@ errno = bidirectional {k, v for k, v in pairs linux.errno}
 
 
 ->
-  from_hook = mail.inbox "captive_http", false
+  from_hook = mail.inbox "captive_redirect", false
   raw = skt.new skt.af.PACKET, skt.sock.RAW, ETH_P_ALL
   cfg.code or= "302 Found"
   http_reply = "HTTP/1.1 #{cfg.code}\nLocation: #{cfg.url}\nConnection: close\n"
@@ -38,5 +38,5 @@ errno = bidirectional {k, v for k, v in pairs linux.errno}
         else
           linux.schedule 100
     ), =>
-      print "CAPTIVE ERROR: #{errno[@] or @}"
+      print "CAPTIVE redirect ERROR: #{errno[@] or @}"
       print debug.traceback!

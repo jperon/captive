@@ -14,7 +14,8 @@ end
 local localnets = cfg.localnets and map(cfg.localnets, ip.s2net):toarray() or { }
 return function()
   local env = lunatik._ENV
-  local to_redirect = mail.outbox("captive_http", false)
+  local to_redirect = mail.outbox("captive_redirect", false)
+  local to_reject = mail.outbox("captive_reject", false)
   local hook
   hook = function(self)
     local pkt = self:getstring(0)
@@ -44,12 +45,10 @@ return function()
       return nf.action.CONTINUE
     end
     if l3.protocol == ip.proto.TCP then
-      if ip.proto.TCP and l4.spt == 80 then
+      if l4.spt == 80 then
         return nf.action.CONTINUE
       end
-      if l4.dpt == 80 then
-        to_redirect:send(pkt)
-      end
+      (l4.dpt == 80 and to_redirect or to_reject):send(pkt)
     end
     return nf.action.DROP
   end

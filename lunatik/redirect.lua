@@ -17,7 +17,7 @@ local errno = bidirectional((function()
   return _tbl_0
 end)())
 return function()
-  local from_hook = mail.inbox("captive_http", false)
+  local from_hook = mail.inbox("captive_redirect", false)
   local raw = skt.new(skt.af.PACKET, skt.sock.RAW, ETH_P_ALL)
   cfg.code = cfg.code or "302 Found"
   local http_reply = "HTTP/1.1 " .. tostring(cfg.code) .. "\nLocation: " .. tostring(cfg.url) .. "\nConnection: close\n"
@@ -44,7 +44,7 @@ return function()
         end
       end
     end), function(self)
-      print("CAPTIVE ERROR: " .. tostring(errno[self] or self))
+      print("CAPTIVE redirect ERROR: " .. tostring(errno[self] or self))
       return print(debug.traceback())
     end)
   end

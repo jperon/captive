@@ -13,7 +13,8 @@ localnets = cfg.localnets and map(cfg.localnets, ip.s2net)\toarray! or {}
 
 ->
   env = lunatik._ENV
-  to_redirect = mail.outbox "captive_http", false
+  to_redirect = mail.outbox "captive_redirect", false
+  to_reject = mail.outbox "captive_reject", false
 
   hook = =>
     pkt = @getstring 0
@@ -34,8 +35,8 @@ localnets = cfg.localnets and map(cfg.localnets, ip.s2net)\toarray! or {}
     return nf.action.CONTINUE if any localnets, => ip.contains_ip @, l3.dst
 
     if l3.protocol == ip.proto.TCP
-      return nf.action.CONTINUE if ip.proto.TCP and l4.spt == 80
-      to_redirect\send pkt if l4.dpt == 80
+      return nf.action.CONTINUE if l4.spt == 80
+      (l4.dpt == 80 and to_redirect or to_reject)\send pkt
 
     return nf.action.DROP
 

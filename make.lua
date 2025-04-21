@@ -32,6 +32,14 @@ install_lunatik = function(self, dir)
   execute("ssh " .. tostring(self) .. " mkdir -p " .. tostring(dir) .. "/" .. tostring(LUNATIK_SUBDIR))
   return execute("cd lunatik && " .. tostring(SCP) .. " * .* " .. tostring(self) .. ":" .. tostring(dir) .. "/" .. tostring(LUNATIK_SUBDIR) .. "/ 2>/dev/null")
 end
+local install_service
+install_service = function(self)
+  print("---------------- Installing init.d files… -------------------")
+  execute(tostring(SCP) .. " init.d/captive " .. tostring(self) .. ":/etc/init.d/")
+  execute(tostring(SCP) .. " init.d/captive_nft " .. tostring(self) .. ":/etc/init.d/")
+  execute("ssh " .. tostring(self) .. " chmod +x /etc/init.d/*")
+  return execute(tostring(SCP) .. " init.d/usr_bin_captive_nft.lua " .. tostring(self) .. ":/usr/bin/captive_nft.lua")
+end
 local install_luci
 install_luci = function(self)
   print("---------------- Installing luci files… ---------------------")
@@ -55,7 +63,8 @@ all = function(self, uhttpd_lua_dir, lunatik_dir)
   end
   compile_moonscript()
   install_uhttpd(self, uhttpd_lua_dir)
-  return install_lunatik(self, lunatik_dir)
+  install_lunatik(self, lunatik_dir)
+  return install_service(self)
 end
 local f = {
   all = all,

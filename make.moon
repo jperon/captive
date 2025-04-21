@@ -26,6 +26,13 @@ install_lunatik = (dir=LUNATIK_DIR) =>
   execute"ssh #{@} mkdir -p #{dir}/#{LUNATIK_SUBDIR}"
   execute"cd lunatik && #{SCP} * .* #{@}:#{dir}/#{LUNATIK_SUBDIR}/ 2>/dev/null"
 
+install_service = =>
+  print"---------------- Installing init.d files… -------------------"
+  execute"#{SCP} init.d/captive #{@}:/etc/init.d/"
+  execute"#{SCP} init.d/captive_nft #{@}:/etc/init.d/"
+  execute"ssh #{@} chmod +x /etc/init.d/*"
+  execute"#{SCP} init.d/usr_bin_captive_nft.lua #{@}:/usr/bin/captive_nft.lua"
+
 install_luci = =>
   print"---------------- Installing luci files… ---------------------"
   execute"coffee -bc luci-app-captive/htdocs/luci-static/resources/view/captive/form.coffee"
@@ -41,6 +48,7 @@ all = (uhttpd_lua_dir=UHTTPD_LUA_DIR, lunatik_dir=LUNATIK_DIR) =>
   compile_moonscript!
   install_uhttpd @, uhttpd_lua_dir
   install_lunatik @, lunatik_dir
+  install_service @
 
 f = :all, :compile_moonscript, :install_uhttpd, :install_lunatik, :install_luci, :install_default_config
 
